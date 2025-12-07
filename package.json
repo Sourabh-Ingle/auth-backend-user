@@ -1,0 +1,21 @@
+{
+  "name": "project_managment_jira",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [],
+  "author": "Sourabh Ingle",
+  "license": "ISC",
+  "description": "This is Project managment App",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "prettier": "3.7.4"
+  }
+}
