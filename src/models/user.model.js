@@ -1,24 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-import brcypt from "brcypt";
+import bcrypt from "bcrypt";
 import crypto from "node:crypto";
-import { ApiError } from "../utils/app-error";
+import { ApiError } from "../utils/app-error.js";
 
-
-export const generateAccessAndRefreshToken = async(userId,email) => {
-    try {
-        const user = await User.findById(userId);
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
-
-        user.refreshToken = refreshToken;
-        await user.save({ validateBeforeSave: false });
-        return { accessToken, refreshToken }
-
-    } catch (error) {
-        throw new ApiError(500,"Something went wrong while generating access token")
-    }
-}
 
 const userSchema = new Schema(
     {
@@ -81,15 +66,15 @@ const userSchema = new Schema(
 
 
 // TIHS IS HOOK IN MONGOOSE THERE ARE POST HOOK AS WELL WITH MANY OPTIONS LIKE "SAVE","FIND"
-userSchema.pre("save", async function (next) {
-    if (!this.isModified) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified) return ;
 
-    this.password = await brcypt.hash(this.password, 10);
-    next();
+    this.password = await bcrypt.hash(this.password, 10);
+    
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-    return await brcypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.password);
 }
 
 userSchema.methods.generateAccessToken = function () {
@@ -115,7 +100,7 @@ userSchema.methods.generateRefreshToken = function () {
 };
 
 userSchema.methods.generateTemporaryToken = function () {
-    const unhashedToken = crypto.randomBytes(20).toString().digest("hex");
+    const unhashedToken = crypto.randomBytes(20).toString("hex");
     const hashToken = crypto
         .createHash("sha256")
         .update(unhashedToken)
