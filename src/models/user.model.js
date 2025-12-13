@@ -66,18 +66,23 @@ const userSchema = new Schema(
 
 
 // TIHS IS HOOK IN MONGOOSE THERE ARE POST HOOK AS WELL WITH MANY OPTIONS LIKE "SAVE","FIND"
-userSchema.pre("save", async function () {
-    if (!this.isModified) return ;
 
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10);
     
 });
+    
+
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
 userSchema.methods.generateAccessToken = function () {
+    console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
+    console.log("ACCESS_TOKEN_EXPIRY:", process.env.ACCESS_TOKEN_EXPIRY);
+    console.log("USER ID:", this._id);
     return jwt.sign(
         {
             id: this._id,
@@ -95,7 +100,7 @@ userSchema.methods.generateRefreshToken = function () {
             id: this._id
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPITY }
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
     )
 };
 
