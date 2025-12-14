@@ -31,8 +31,7 @@ export const userRegisterValidator = () => {
             .optional()
             .trim()
             .isString()
-    )
-    
+    ) 
 };
 
 export const userLogginValidator = () => {
@@ -49,4 +48,33 @@ export const userLogginValidator = () => {
             .notEmpty()
             .withMessage('Password is required')
         ] 
+}
+
+export const userChangeCurrentPasswordValidator = () => {
+    return [
+        body("oldPassword")
+            .trim()
+            .notEmpty().withMessage("Old password is required!!!")
+        ,
+        body("newPassword")
+            .trim()
+            .notEmpty().withMessage("New password is required!!!")
+    ]
+};
+
+export const userForgotPasswordValidator = () => {
+    return [
+        body("email")
+            .trim()
+            .notEmpty().withMessage("Email is required!!!")
+            .isEmail().withMessage("Invalid Email!!!")
+    ]
+};
+
+export const userResetForgotPasswordValidator = () => {
+    return [
+        body("newPassword")
+            .trim()
+            .notEmpty().withMessage("New password field should not be empty!!!")
+    ]
 }
