@@ -41,7 +41,7 @@ const userSchema = new Schema(
             required:[true,"password field is required"]
         },
         isEmailVerified: {
-            type: String,
+            type: Boolean,
             default:false
         },
         refreshToken: {
